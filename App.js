@@ -4,7 +4,7 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { StyleSheet, ImageBackground, Text, View } from "react-native";
 
-import RegistrationScreen from "./Screens/RegistrationScreen";
+import RegistrationScreen from "./screens/RegistrationScreen";
 
 const image = "./assets/images/bg.jpg";
 
