@@ -21,8 +21,7 @@ export default function RegistrationScreen() {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [state, setState] = useState(initialState);
   const [hidePassword, setHidePassword] = useState(true);
-  const [inputBgColor, setInputBgColor] = useState("#F6F6F6");
-  const [inputBorderColor, setInputBorderColor] = useState("#E8E8E8");
+  const [focused, setFocused] = useState("");
 
   const { login, email, password } = state;
 
@@ -37,18 +36,6 @@ export default function RegistrationScreen() {
     console.log(state);
     setState(initialState);
   };
-
-  //   const customOnFocus = () => {
-  //     TextInput?.onFocus;
-  //     setInputBgColor("#ffffff");
-  //     setInputBorderColor("#FF6C00");
-  //   };
-
-  //   const customOnBlur = () => {
-  //     TextInput?.onBlur;
-  //     setInputBgColor("#F6F6F6");
-  //     setInputBorderColor("#E8E8E8");
-  //   };
 
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
@@ -77,17 +64,19 @@ export default function RegistrationScreen() {
             <View>
               <TextInput
                 value={login}
-                style={{
-                  ...styles.input,
-                  backgroundColor: inputBgColor,
-                  borderColor: inputBorderColor,
-                }}
                 placeholder={"Логін"}
                 placeholderTextColor={"#BDBDBD"}
-                onFocus={() => setIsShowKeyboard(true)}
+                onFocus={() => {
+                  setIsShowKeyboard(true);
+                  setFocused("login");
+                }}
                 selectionColor={"#FF6C00"}
-                // onFocus={customOnFocus}
-                // onBlur={customOnBlur}
+                onBlur={() => setFocused("")}
+                style={{
+                  ...styles.input,
+                  backgroundColor: focused === "login" ? "#ffffff" : "#F6F6F6",
+                  borderColor: focused === "login" ? "#FF6C00" : "#E8E8E8",
+                }}
                 onChangeText={(value) =>
                   setState((prevState) => ({ ...prevState, login: value }))
                 }
@@ -96,41 +85,46 @@ export default function RegistrationScreen() {
             <View style={{ marginTop: 16 }}>
               <TextInput
                 value={email}
-                style={{
-                  ...styles.input,
-                  backgroundColor: inputBgColor,
-                  borderColor: inputBorderColor,
-                }}
                 placeholder={"Адреса електронної пошти"}
                 placeholderTextColor={"#BDBDBD"}
-                onFocus={() => setIsShowKeyboard(true)}
+                onFocus={() => {
+                  setIsShowKeyboard(true);
+                  setFocused("email");
+                }}
                 selectionColor={"#FF6C00"}
                 onChangeText={(value) =>
                   setState((prevState) => ({ ...prevState, email: value }))
                 }
-                // onFocus={customOnFocus}
-                // onBlur={customOnBlur}
+                onBlur={() => setFocused("")}
+                style={{
+                  ...styles.input,
+                  backgroundColor: focused === "email" ? "#ffffff" : "#F6F6F6",
+                  borderColor: focused === "email" ? "#FF6C00" : "#E8E8E8",
+                }}
               />
             </View>
             <View style={{ marginTop: 16 }}>
               <TextInput
                 value={password}
-                style={{
-                  ...styles.input,
-                  marginBottom: isShowKeyboard ? 32 : 0,
-                  backgroundColor: inputBgColor,
-                  borderColor: inputBorderColor,
-                }}
                 secureTextEntry={hidePassword}
                 placeholder={"Пароль"}
                 placeholderTextColor={"#BDBDBD"}
-                onFocus={() => setIsShowKeyboard(true)}
+                onFocus={() => {
+                  setIsShowKeyboard(true);
+                  setFocused("password");
+                }}
                 selectionColor={"#FF6C00"}
                 onChangeText={(value) =>
                   setState((prevState) => ({ ...prevState, password: value }))
                 }
-                // onFocus={customOnFocus}
-                // onBlur={customOnBlur}
+                onBlur={() => setFocused("")}
+                style={{
+                  ...styles.input,
+                  marginBottom: isShowKeyboard ? 32 : 0,
+                  backgroundColor:
+                    focused === "password" ? "#ffffff" : "#F6F6F6",
+                  borderColor: focused === "password" ? "#FF6C00" : "#E8E8E8",
+                }}
               />
               <Ionicons
                 onPress={() => setHidePassword(!hidePassword)}
