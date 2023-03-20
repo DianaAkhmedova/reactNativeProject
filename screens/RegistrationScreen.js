@@ -17,7 +17,7 @@ import { AntDesign, Ionicons } from "@expo/vector-icons";
 const image = "./assets/images/bg.jpg";
 const initialState = { login: "", email: "", password: "" };
 
-export default function RegistrationScreen() {
+const RegistrationScreen = () => {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [state, setState] = useState(initialState);
   const [hidePassword, setHidePassword] = useState(true);
@@ -156,7 +156,9 @@ export default function RegistrationScreen() {
       </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
-}
+};
+
+export default RegistrationScreen;
 
 const styles = StyleSheet.create({
   container: {

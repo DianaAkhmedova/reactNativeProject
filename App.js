@@ -5,6 +5,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { StyleSheet, ImageBackground, Text, View } from "react-native";
 
 import RegistrationScreen from "./screens/RegistrationScreen";
+import LoginScreen from "./screens/LoginScreen";
 
 const image = "./assets/images/bg.jpg";
 
@@ -29,7 +30,8 @@ export default function App() {
     <View style={styles.container} onLayout={onLayoutRootView}>
       <ImageBackground source={require(image)} style={styles.imgBg}>
         <StatusBar style="auto" />
-        <RegistrationScreen />
+        {/* <RegistrationScreen /> */}
+        <LoginScreen />
       </ImageBackground>
     </View>
   );
