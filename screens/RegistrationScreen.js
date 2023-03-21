@@ -31,8 +31,12 @@ const RegistrationScreen = () => {
   };
 
   const keyboardHideOnBtn = () => {
-    setIsShowKeyboard(false);
     Keyboard.dismiss();
+    setIsShowKeyboard(false);
+    if (login === "" || email === "" || password === "") {
+      alert("Всі поля повинні бути заповнені!");
+      return;
+    }
     console.log(state);
     setState(initialState);
   };
@@ -87,6 +91,7 @@ const RegistrationScreen = () => {
                 value={email}
                 placeholder={"Адреса електронної пошти"}
                 placeholderTextColor={"#BDBDBD"}
+                inputMode={"email"}
                 onFocus={() => {
                   setIsShowKeyboard(true);
                   setFocused("email");
