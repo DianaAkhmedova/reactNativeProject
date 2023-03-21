@@ -12,7 +12,7 @@ import {
   Keyboard,
 } from "react-native";
 
-import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 
 const image = "./assets/images/bg.jpg";
 const initialState = { email: "", password: "" };
@@ -141,6 +141,7 @@ const styles = StyleSheet.create({
   },
   title: {
     marginTop: 32,
+    fontFamily: "Roboto-Medium",
     fontSize: 30,
     textAlign: "center",
     color: "#212121",
@@ -153,14 +154,13 @@ const styles = StyleSheet.create({
   },
 
   input: {
+    fontFamily: "Roboto-Regular",
     fontSize: 16,
     paddingLeft: 16,
     borderWidth: 1,
     height: 50,
     borderRadius: 8,
     color: "#212121",
-    // borderColor: "#E8E8E8",
-    // backgroundColor: "#F6F6F6",
   },
   btn: {
     marginTop: 43,
@@ -173,10 +173,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   btnTitle: {
+    fontFamily: "Roboto-Regular",
     color: "#f0f8ff",
     fontSize: 16,
+    lineHeight: 19,
   },
   text: {
+    fontFamily: "Roboto-Regular",
     textAlign: "center",
     color: "#1B4371",
     fontSize: 16,
