@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { StatusBar } from "expo-status-bar";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { StyleSheet, ImageBackground, Text, View } from "react-native";
+import { StyleSheet, ImageBackground, View } from "react-native";
 
 import RegistrationScreen from "./screens/RegistrationScreen";
 import LoginScreen from "./screens/LoginScreen";
