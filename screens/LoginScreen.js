@@ -114,12 +114,12 @@ const LoginScreen = () => {
                 activeOpacity={0.8}
                 onPress={keyboardHideOnBtn}
               >
-                <Text style={styles.btnTitle}>Зареєструватися</Text>
+                <Text style={styles.btnTitle}>Увійти</Text>
               </TouchableOpacity>
             )}
           </View>
           {!isShowKeyboard && (
-            <Text style={styles.text}>Вже є акаунт? Увійти</Text>
+            <Text style={styles.text}>Немає акаунту? Зареєструватися</Text>
           )}
         </View>
       </KeyboardAvoidingView>
