@@ -1,50 +1,15 @@
-import { useCallback } from "react";
-import { StatusBar } from "expo-status-bar";
-import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
-import { StyleSheet, ImageBackground, View } from "react-native";
+import "react-native-gesture-handler";
 
-import RegistrationScreen from "./screens/RegistrationScreen";
-import LoginScreen from "./screens/LoginScreen";
+import { UserProvider } from "./userContext";
 
-const image = "./assets/images/bg.jpg";
+import MainComponent from "./src/components/MainComponent";
 
-export default function App() {
-  const [fontsLoaded] = useFonts({
-    "Roboto-Regular": require("./assets/fonts/Roboto-Regular.ttf"),
-    "Roboto-Medium": require("./assets/fonts/Roboto-Medium.ttf"),
-    "Roboto-Bold": require("./assets/fonts/Roboto-Bold.ttf"),
-  });
-
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
-
-  if (!fontsLoaded) {
-    return null;
-  }
-
+const App = () => {
   return (
-    <View style={styles.container} onLayout={onLayoutRootView}>
-      <ImageBackground source={require(image)} style={styles.imgBg}>
-        <StatusBar style="auto" />
-        <RegistrationScreen />
-        {/* <LoginScreen /> */}
-      </ImageBackground>
-    </View>
+    <UserProvider>
+      <MainComponent />
+    </UserProvider>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  imgBg: {
-    flex: 1,
-    justifyContent: "flex-end",
-    resizeMode: "cover",
-  },
-});
+export default App;
