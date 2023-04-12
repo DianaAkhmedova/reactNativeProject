@@ -67,7 +67,7 @@ const CreatePostsScreen = () => {
                 value={title}
                 placeholder={"Назва..."}
                 placeholderTextColor={"#BDBDBD"}
-                inputMode={"title"}
+                // inputMode={"title"}
                 onFocus={() => {
                   setIsShowKeyboard(true);
                 }}

@@ -11,7 +11,9 @@ import {
 
 import { useUser } from "../../../userContext";
 
-const PostsScreen = () => {
+import PostList from "../../components/PostList";
+
+const PostsScreen = ({ navigation }) => {
   const { username, userEmail } = useUser();
 
   return (
@@ -23,6 +25,7 @@ const PostsScreen = () => {
           <Text style={styles.userEmail}>{userEmail}</Text>
         </View>
       </View>
+      <PostList navigation={navigation} />
     </View>
   );
 };
@@ -33,11 +36,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
+    paddingLeft: 16,
+    paddingRight: 16,
   },
   userContainer: {
     flexDirection: "row",
     marginTop: 32,
-    marginLeft: 16,
   },
   avatarBox: {
     marginRight: 8,

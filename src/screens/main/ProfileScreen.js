@@ -14,6 +14,8 @@ import {
 
 import { AntDesign, Feather } from "@expo/vector-icons";
 
+import ProfilePostList from "../../components/ProfilePostList";
+
 const image = "../../../assets/images/bg.jpg";
 import { useUser } from "../../../userContext";
 
@@ -47,6 +49,7 @@ const ProfileScreen = () => {
           </View>
         </View>
         <Text style={styles.title}>{username}</Text>
+        <ProfilePostList />
       </View>
     </ImageBackground>
   );
