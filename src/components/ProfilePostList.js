@@ -1,11 +1,9 @@
 import React from "react";
 import {
-  SafeAreaView,
   View,
   FlatList,
   StyleSheet,
   Text,
-  StatusBar,
   TouchableOpacity,
 } from "react-native";
 
@@ -18,7 +16,7 @@ const DATA = [
   },
 ];
 
-const Item = ({ title }) => (
+const Item = ({ title, navigation }) => (
   <View style={styles.item}>
     {/* //     <Text style={styles.title}>{title}</Text> */}
     <View style={styles.photoWrapper}></View>
@@ -55,17 +53,21 @@ const Item = ({ title }) => (
           color="#BDBDBD"
           style={{ marginRight: 4 }}
         />
-        <Text style={styles.location}>Ivano-Frankivs'k Region, Ukraine</Text>
+        <TouchableOpacity onPress={() => navigation.navigate("Карта")}>
+          <Text style={styles.location}>Ivano-Frankivs'k Region, Ukraine</Text>
+        </TouchableOpacity>
       </View>
     </View>
   </View>
 );
 
-const ProfilePostList = () => {
+const ProfilePostList = ({ navigation }) => {
   return (
     <FlatList
       data={DATA}
-      renderItem={({ item }) => <Item title={item.title} />}
+      renderItem={({ item }) => (
+        <Item title={item.title} navigation={navigation} />
+      )}
       keyExtractor={(item) => item.id}
     />
   );
@@ -96,6 +98,7 @@ const styles = StyleSheet.create({
   likes: { fontSize: 16, color: "#212121", marginRight: 24 },
   location: {
     fontSize: 16,
+    textDecorationLine: "underline",
   },
 });
 

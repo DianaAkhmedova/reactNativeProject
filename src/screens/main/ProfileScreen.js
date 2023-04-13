@@ -1,15 +1,10 @@
 import React from "react";
 import {
-  TouchableWithoutFeedback,
-  KeyboardAvoidingView,
-  Platform,
   ImageBackground,
   StyleSheet,
   Text,
   View,
-  TextInput,
   TouchableOpacity,
-  Keyboard,
 } from "react-native";
 
 import { AntDesign, Feather } from "@expo/vector-icons";
@@ -19,7 +14,7 @@ import ProfilePostList from "../../components/ProfilePostList";
 const image = "../../../assets/images/bg.jpg";
 import { useUser } from "../../../userContext";
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ navigation }) => {
   const { username, logOut } = useUser();
 
   return (
@@ -49,7 +44,7 @@ const ProfileScreen = () => {
           </View>
         </View>
         <Text style={styles.title}>{username}</Text>
-        <ProfilePostList />
+        <ProfilePostList navigation={navigation} />
       </View>
     </ImageBackground>
   );

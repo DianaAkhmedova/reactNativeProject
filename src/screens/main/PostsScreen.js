@@ -1,64 +1,84 @@
-import React, { useState, useEffect } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  FlatList,
-  Image,
-  TouchableOpacity,
-} from "react-native";
+import React from "react";
+import { TouchableOpacity } from "react-native";
+import { createStackNavigator } from "@react-navigation/stack";
 
-import { useUser } from "../../../userContext";
+import { AntDesign } from "@expo/vector-icons";
 
-import PostList from "../../components/PostList";
+import DefaultPostsScreen from "../nested/DefaultPostsScreen";
+import CommentsScreen from "../nested/CommentsScreen";
+import MapScreen from "../nested/MapScreen";
 
-const PostsScreen = ({ navigation }) => {
-  const { username, userEmail } = useUser();
+const NestedStack = createStackNavigator();
 
+const PostsScreen = ({ navigation: { goBack } }) => {
   return (
-    <View style={styles.container}>
-      <View style={styles.userContainer}>
-        <View style={styles.avatarBox}></View>
-        <View style={styles.userInfo}>
-          <Text style={styles.userName}>{username}</Text>
-          <Text style={styles.userEmail}>{userEmail}</Text>
-        </View>
-      </View>
-      <PostList navigation={navigation} />
-    </View>
+    <NestedStack.Navigator
+      screenOptions={{
+        headerTitleAlign: "center",
+        headerStyle: { height: 88 },
+        headerTitleStyle: { fontSize: 17, color: "#212121" },
+      }}
+    >
+      <NestedStack.Screen
+        options={{
+          headerShown: false,
+          tabBarStyle: { display: "none" },
+          headerLeft: () => (
+            <TouchableOpacity
+              style={{ marginLeft: 16 }}
+              onPress={() => goBack()}
+            >
+              <AntDesign
+                name="arrowleft"
+                size={24}
+                color="rgba(33, 33, 33, 0.8)"
+              />
+            </TouchableOpacity>
+          ),
+        }}
+        name="DefaultPostsScreen"
+        component={DefaultPostsScreen}
+      />
+      <NestedStack.Screen
+        options={{
+          tabBarStyle: { display: "none" },
+          headerLeft: () => (
+            <TouchableOpacity
+              style={{ marginLeft: 16 }}
+              onPress={() => goBack()}
+            >
+              <AntDesign
+                name="arrowleft"
+                size={24}
+                color="rgba(33, 33, 33, 0.8)"
+              />
+            </TouchableOpacity>
+          ),
+        }}
+        name="Коментарі"
+        component={CommentsScreen}
+      />
+      <NestedStack.Screen
+        options={{
+          tabBarStyle: { display: "none" },
+          headerLeft: () => (
+            <TouchableOpacity
+              style={{ marginLeft: 16 }}
+              onPress={() => goBack()}
+            >
+              <AntDesign
+                name="arrowleft"
+                size={24}
+                color="rgba(33, 33, 33, 0.8)"
+              />
+            </TouchableOpacity>
+          ),
+        }}
+        name="Карта"
+        component={MapScreen}
+      />
+    </NestedStack.Navigator>
   );
 };
 
 export default PostsScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#ffffff",
-    paddingLeft: 16,
-    paddingRight: 16,
-  },
-  userContainer: {
-    flexDirection: "row",
-    marginTop: 32,
-  },
-  avatarBox: {
-    marginRight: 8,
-    width: 60,
-    height: 60,
-    borderRadius: 16,
-    backgroundColor: "#F6F6F6",
-  },
-  userInfo: {
-    justifyContent: "center",
-  },
-  userName: {
-    fontWeight: "700",
-    color: "#212121",
-  },
-  userEmail: {
-    fontWeight: "400",
-    color: "rgba(33, 33, 33, 0.8)",
-  },
-});

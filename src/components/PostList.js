@@ -16,7 +16,7 @@ const DATA = [
   },
 ];
 
-const Item = ({ title }) => (
+const Item = ({ title, navigation }) => (
   <View style={styles.item}>
     <View style={styles.photoWrapper}></View>
     <Text style={styles.text}>{title}</Text>
@@ -27,7 +27,11 @@ const Item = ({ title }) => (
         marginTop: 8,
       }}
     >
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate("Коментарі");
+        }}
+      >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <FontAwesome
             name="comment-o"
@@ -45,17 +49,25 @@ const Item = ({ title }) => (
           color="#BDBDBD"
           style={{ marginRight: 4 }}
         />
-        <Text style={styles.location}>Ivano-Frankivs'k Region, Ukraine</Text>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("Карта");
+          }}
+        >
+          <Text style={styles.location}>Ivano-Frankivs'k Region, Ukraine</Text>
+        </TouchableOpacity>
       </View>
     </View>
   </View>
 );
 
-const PostList = () => {
+const PostList = ({ navigation }) => {
   return (
     <FlatList
       data={DATA}
-      renderItem={({ item }) => <Item title={item.title} />}
+      renderItem={({ item }) => (
+        <Item title={item.title} navigation={navigation} />
+      )}
       keyExtractor={(item) => item.id}
     />
   );
@@ -84,6 +96,7 @@ const styles = StyleSheet.create({
   },
   location: {
     fontSize: 16,
+    textDecorationLine: "underline",
   },
 });
 
