@@ -5,8 +5,6 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { AntDesign } from "@expo/vector-icons";
 
 import DefaultPostsScreen from "../nested/DefaultPostsScreen";
-import CommentsScreen from "../nested/CommentsScreen";
-import MapScreen from "../nested/MapScreen";
 
 const NestedStack = createStackNavigator();
 
@@ -38,44 +36,6 @@ const PostsScreen = ({ navigation: { goBack } }) => {
         }}
         name="DefaultPostsScreen"
         component={DefaultPostsScreen}
-      />
-      <NestedStack.Screen
-        options={{
-          tabBarStyle: { display: "none" },
-          headerLeft: () => (
-            <TouchableOpacity
-              style={{ marginLeft: 16 }}
-              onPress={() => goBack()}
-            >
-              <AntDesign
-                name="arrowleft"
-                size={24}
-                color="rgba(33, 33, 33, 0.8)"
-              />
-            </TouchableOpacity>
-          ),
-        }}
-        name="Коментарі"
-        component={CommentsScreen}
-      />
-      <NestedStack.Screen
-        options={{
-          tabBarStyle: { display: "none" },
-          headerLeft: () => (
-            <TouchableOpacity
-              style={{ marginLeft: 16 }}
-              onPress={() => goBack()}
-            >
-              <AntDesign
-                name="arrowleft"
-                size={24}
-                color="rgba(33, 33, 33, 0.8)"
-              />
-            </TouchableOpacity>
-          ),
-        }}
-        name="Карта"
-        component={MapScreen}
       />
     </NestedStack.Navigator>
   );

@@ -6,13 +6,16 @@ import {
   TextInput,
   TouchableOpacity,
   Keyboard,
+  Image,
 } from "react-native";
 
 import { AntDesign } from "@expo/vector-icons";
 
-const CommentsScreen = ({}) => {
+const CommentsScreen = ({ route }) => {
   const [comment, setComment] = useState("");
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+
+  const { photo } = route.params;
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
@@ -34,7 +37,12 @@ const CommentsScreen = ({}) => {
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container}>
         <View>
-          <View style={styles.photoWrapper}></View>
+          <View style={styles.photoWrapper}>
+            <Image
+              style={{ flex: 1, borderRadius: 8 }}
+              source={{ uri: photo }}
+            />
+          </View>
         </View>
         <View style={{ marginTop: 32, marginBottom: isShowKeyboard ? 300 : 0 }}>
           <View>
@@ -79,7 +87,6 @@ const styles = StyleSheet.create({
     height: 240,
     borderRadius: 16,
     backgroundColor: "#F6F6F6",
-    alignItems: "center",
     justifyContent: "center",
   },
   input: {

@@ -1,8 +1,6 @@
 import React from "react";
 import { TouchableOpacity } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createStackNavigator } from "@react-navigation/stack";
-
 import { AntDesign, Feather } from "@expo/vector-icons";
 
 import { useUser } from "../../../userContext";
@@ -10,11 +8,8 @@ import { useUser } from "../../../userContext";
 import PostsScreen from "./PostsScreen";
 import CreatePostsScreen from "./CreatePostsScreen";
 import ProfileScreen from "./ProfileScreen";
-import CommentsScreen from "../nested/CommentsScreen";
-import MapScreen from "../nested/MapScreen";
 
 const MainTab = createBottomTabNavigator();
-const NestedStack = createStackNavigator();
 
 const HomeScreen = ({ navigation }) => {
   const { logOut } = useUser();
@@ -32,6 +27,28 @@ const HomeScreen = ({ navigation }) => {
         headerTitleStyle: { fontSize: 17, color: "#212121" },
       }}
     >
+      <MainTab.Screen
+        options={{
+          tabBarItemStyle: {
+            marginLeft: 82,
+          },
+          headerRight: () => (
+            <TouchableOpacity
+              style={{ marginRight: 16 }}
+              onPress={() => {
+                logOut();
+              }}
+            >
+              <Feather name="log-out" size={24} color="#BDBDBD" />
+            </TouchableOpacity>
+          ),
+          tabBarIcon: ({ focused, color, size }) => (
+            <AntDesign name="appstore-o" size={size} color={color} />
+          ),
+        }}
+        name="Публікації"
+        component={PostsScreen}
+      />
       <MainTab.Screen
         options={{
           tabBarStyle: { display: "none" },
@@ -65,29 +82,6 @@ const HomeScreen = ({ navigation }) => {
         name="Створити публікацію"
         component={CreatePostsScreen}
       />
-      <MainTab.Screen
-        options={{
-          tabBarItemStyle: {
-            marginLeft: 82,
-          },
-          headerRight: () => (
-            <TouchableOpacity
-              style={{ marginRight: 16 }}
-              onPress={() => {
-                logOut();
-              }}
-            >
-              <Feather name="log-out" size={24} color="#BDBDBD" />
-            </TouchableOpacity>
-          ),
-          tabBarIcon: ({ focused, color, size }) => (
-            <AntDesign name="appstore-o" size={size} color={color} />
-          ),
-        }}
-        name="Публікації"
-        component={PostsScreen}
-      />
-
       <MainTab.Screen
         options={{
           tabBarItemStyle: {

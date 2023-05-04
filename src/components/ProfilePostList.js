@@ -47,15 +47,15 @@ const Item = ({ title, navigation }) => (
         </View>
       </TouchableOpacity>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <Feather
-          name="map-pin"
-          size={24}
-          color="#BDBDBD"
-          style={{ marginRight: 4 }}
-        />
         <TouchableOpacity onPress={() => navigation.navigate("Карта")}>
-          <Text style={styles.location}>Ivano-Frankivs'k Region, Ukraine</Text>
+          <Feather
+            name="map-pin"
+            size={24}
+            color="#BDBDBD"
+            style={{ marginRight: 4 }}
+          />
         </TouchableOpacity>
+        <Text style={styles.location}>Ivano-Frankivs'k Region, Ukraine</Text>
       </View>
     </View>
   </View>

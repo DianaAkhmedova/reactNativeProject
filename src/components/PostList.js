@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  Image,
 } from "react-native";
 
 import { FontAwesome, Feather } from "@expo/vector-icons";
@@ -16,9 +17,11 @@ const DATA = [
   },
 ];
 
-const Item = ({ title, navigation }) => (
+const Item = ({ title, location, photo, navigation, latitude, longitude }) => (
   <View style={styles.item}>
-    <View style={styles.photoWrapper}></View>
+    <View style={styles.photoWrapper}>
+      <Image style={{ flex: 1, borderRadius: 8 }} source={{ uri: photo }} />
+    </View>
     <Text style={styles.text}>{title}</Text>
     <View
       style={{
@@ -29,7 +32,7 @@ const Item = ({ title, navigation }) => (
     >
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate("Коментарі");
+          navigation.navigate("Коментарі", {photo});
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -42,33 +45,41 @@ const Item = ({ title, navigation }) => (
           <Text style={styles.comments}>0</Text>
         </View>
       </TouchableOpacity>
+
       <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <Feather
-          name="map-pin"
-          size={24}
-          color="#BDBDBD"
-          style={{ marginRight: 4 }}
-        />
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("Карта");
+            navigation.navigate("Карта", { latitude, longitude });
           }}
         >
-          <Text style={styles.location}>Ivano-Frankivs'k Region, Ukraine</Text>
+          <Feather
+            name="map-pin"
+            size={24}
+            color="#BDBDBD"
+            style={{ marginRight: 4 }}
+          />
         </TouchableOpacity>
+        <Text style={styles.location}>{location}</Text>
       </View>
     </View>
   </View>
 );
 
-const PostList = ({ navigation }) => {
+const PostList = ({ items, navigation }) => {
   return (
     <FlatList
-      data={DATA}
+      data={items}
       renderItem={({ item }) => (
-        <Item title={item.title} navigation={navigation} />
+        <Item
+          latitude={item.photoLocation.coords.latitude}
+          longitude={item.photoLocation.coords.longitude}
+          title={item.title}
+          location={item.location}
+          photo={item.photo}
+          navigation={navigation}
+        />
       )}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item, index) => index.toString()}
     />
   );
 };
@@ -80,9 +91,8 @@ const styles = StyleSheet.create({
   photoWrapper: {
     width: "100%",
     height: 240,
-    borderRadius: 16,
+    borderRadius: 8,
     backgroundColor: "#F6F6F6",
-    alignItems: "center",
     justifyContent: "center",
   },
   text: {

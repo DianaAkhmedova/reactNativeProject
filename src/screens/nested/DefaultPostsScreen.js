@@ -1,12 +1,19 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { useUser } from "../../../userContext";
 
 import PostList from "../../components/PostList";
 
-const DefaultPostsScreen = ({ navigation }) => {
+const DefaultPostsScreen = ({ route, navigation }) => {
   const { username, userEmail } = useUser();
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    if (route.params) {
+      setPosts((prevPosts) => [...prevPosts, route.params]);
+    }
+  }, [route.params]);
 
   return (
     <View style={styles.container}>
@@ -17,7 +24,7 @@ const DefaultPostsScreen = ({ navigation }) => {
           <Text style={styles.userEmail}>{userEmail}</Text>
         </View>
       </View>
-      <PostList navigation={navigation} />
+      <PostList items={posts} navigation={navigation} />
     </View>
   );
 };

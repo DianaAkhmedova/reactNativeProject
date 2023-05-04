@@ -6,13 +6,14 @@ import * as SplashScreen from "expo-splash-screen";
 import { StyleSheet, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 
-import { useRoute } from "../router";
+import { authRoute } from "../authRoute";
 
 import { useUser } from "../../userContext";
 
+import NestedComponent from "./NestedComponent";
+
 const MainComponent = () => {
   const { isLoggedIn, logIn } = useUser();
-  const routing = useRoute(isLoggedIn);
 
   const [fontsLoaded] = useFonts({
     "Roboto-Regular": require("../../assets/fonts/Roboto-Regular.ttf"),
@@ -34,7 +35,7 @@ const MainComponent = () => {
     <NavigationContainer>
       <StatusBar style="auto" />
       <View style={styles.container} onLayout={onLayoutRootView}>
-        {routing}
+        {!isLoggedIn ? authRoute() : <NestedComponent />}
       </View>
     </NavigationContainer>
   );
