@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   TouchableWithoutFeedback,
   View,
@@ -7,15 +7,54 @@ import {
   TouchableOpacity,
   Keyboard,
   Image,
+  Text,
 } from "react-native";
+
+import { useSelector } from "react-redux";
+import { collection, doc, addDoc, onSnapshot, query } from "firebase/firestore";
 
 import { AntDesign } from "@expo/vector-icons";
 
-const CommentsScreen = ({ route }) => {
+import { db } from "../../../firebase/config";
+
+import CommentsList from "../../components/CommentList";
+
+import moment from "moment/moment";
+// import * as moment from "moment";
+import "moment/locale/uk";
+
+const CommentsScreen = ({ route, navigation }) => {
   const [comment, setComment] = useState("");
+  const [allComments, setAllComments] = useState([]);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
 
-  const { photo } = route.params;
+  const { photo, postId } = route.params;
+  const { nickname } = useSelector((state) => state.auth);
+
+  const createComment = async () => {
+    const commentRef = doc(db, "posts", postId);
+    await addDoc(collection(commentRef, "comments"), {
+      nickname,
+      comment,
+      date: moment().format(" DD MMMM, YYYY | HH:mm"),
+    });
+  };
+
+  const getAllComments = async () => {
+    const q = await query(collection(db, `posts/${postId}/comments`));
+    await onSnapshot(q, (data) => {
+      const comments = data.docs.map((comment) => ({
+        ...comment.data(),
+        id: comment.id,
+      }));
+      return setAllComments(comments);
+    });
+  };
+
+  console.log(allComments);
+  useEffect(() => {
+    getAllComments();
+  }, []);
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
@@ -29,7 +68,7 @@ const CommentsScreen = ({ route }) => {
       alert("Коментарій не може бути порожнім!");
       return;
     }
-    console.log(comment);
+    createComment();
     setComment("");
   };
 
@@ -44,7 +83,8 @@ const CommentsScreen = ({ route }) => {
             />
           </View>
         </View>
-        <View style={{ marginTop: 32, marginBottom: isShowKeyboard ? 300 : 0 }}>
+        {allComments.length !== 0 && <CommentsList items={allComments} />}
+        <View style={{ marginTop: 32, marginBottom: isShowKeyboard ? 380 : 0 }}>
           <View>
             <TextInput
               value={comment}
@@ -105,7 +145,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FF6C00",
     height: 34,
     width: 34,
-    borderRadius: "50%",
+    borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
   },
