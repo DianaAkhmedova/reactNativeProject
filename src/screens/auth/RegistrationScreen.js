@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import {
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
@@ -10,40 +11,94 @@ import {
   TextInput,
   TouchableOpacity,
   Keyboard,
+  Image,
 } from "react-native";
+import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import * as ImagePicker from "expo-image-picker";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 
-import { useUser } from "../../../userContext";
+import { storage } from "../../../firebase/config";
+
+import { authSignUpUser } from "../../../redux/auth/authOperations";
 
 const image = "../../../assets/images/bg.jpg";
-const initialState = { login: "", email: "", password: "" };
+const initialState = { login: "", email: "", password: "", avatar: "" };
 
 const RegistrationScreen = ({ navigation }) => {
+  const [userPhoto, setUserPhoto] = useState(null);
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [state, setState] = useState(initialState);
   const [hidePassword, setHidePassword] = useState(true);
   const [focused, setFocused] = useState("");
 
-  const { login, email, password } = state;
+  const { login, email, password, avatar } = state;
 
-  const { logIn } = useUser();
+  const dispatch = useDispatch();
+
+  const pickImage = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        setUserPhoto(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const uploadAvatarToServer = async () => {
+    try {
+      const response = await fetch(userPhoto);
+      const file = await response.blob();
+      const uniqueAvatarId = Date.now().toString();
+
+      const storageRef = ref(storage, `avatar/${uniqueAvatarId}`);
+      const result = await uploadBytesResumable(storageRef, file);
+      const processedPhoto = await getDownloadURL(storageRef);
+
+      return processedPhoto;
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const clearAvatar = () => {
+    setUserPhoto(null);
+  };
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
   };
 
-  const keyboardHideOnBtn = () => {
-    Keyboard.dismiss();
-    setIsShowKeyboard(false);
+  const handleSubmit = async () => {
+    keyboardHide();
     if (login === "" || email === "" || password === "") {
       alert("Всі поля повинні бути заповнені!");
       return;
     }
 
-    console.log(state);
-    logIn(login, email);
-    setState(initialState);
+    if (userPhoto) {
+      const avatar = await uploadAvatarToServer();
+      console.log("avatar: ", avatar);
+      await setState((prevState) => ({
+        ...prevState,
+        avatar,
+      }));
+      console.log(state);
+      dispatch(authSignUpUser(state));
+      setState(initialState);
+      return;
+    } else {
+      dispatch(authSignUpUser(state));
+      setState(initialState);
+    }
   };
 
   return (
@@ -56,19 +111,47 @@ const RegistrationScreen = ({ navigation }) => {
           <View style={styles.registrationContainer}>
             <View style={styles.avatarBox}>
               <View style={styles.avatar}>
-                <AntDesign
-                  // name={isAvatar ? "pluscircleo" : "closecircleo"}
-                  name="pluscircleo"
-                  size={25}
-                  color={"#FF6C00"}
-                  style={{
-                    position: "absolute",
-                    top: 81,
-                    right: -12,
-                  }}
-                />
+                {userPhoto && (
+                  <Image
+                    source={{ uri: userPhoto }}
+                    style={{ width: 120, height: 120, borderRadius: 16 }}
+                  />
+                )}
+
+                {!userPhoto ? (
+                  <TouchableOpacity
+                    style={{
+                      position: "absolute",
+                      top: 81,
+                      right: -12,
+                    }}
+                    onPress={pickImage}
+                  >
+                    <AntDesign
+                      name={"pluscircleo"}
+                      size={25}
+                      color={"#FF6C00"}
+                    />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    style={{
+                      position: "absolute",
+                      top: 81,
+                      right: -12,
+                    }}
+                    onPress={clearAvatar}
+                  >
+                    <AntDesign
+                      name={"closecircleo"}
+                      size={25}
+                      color={"#BDBDBD"}
+                    />
+                  </TouchableOpacity>
+                )}
               </View>
             </View>
+
             <Text style={styles.title}>Реєстрація</Text>
             <View style={styles.form}>
               <View>
@@ -156,7 +239,7 @@ const RegistrationScreen = ({ navigation }) => {
                 <TouchableOpacity
                   style={styles.btn}
                   activeOpacity={0.8}
-                  onPress={keyboardHideOnBtn}
+                  onPress={handleSubmit}
                 >
                   <Text style={styles.btnTitle}>Зареєструватися</Text>
                 </TouchableOpacity>
