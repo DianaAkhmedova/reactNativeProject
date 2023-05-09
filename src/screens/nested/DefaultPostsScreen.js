@@ -1,27 +1,40 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { useSelector } from "react-redux";
+import { collection, query, onSnapshot } from "firebase/firestore";
 
-import { useUser } from "../../../userContext";
+import { db } from "../../../firebase/config";
 
 import PostList from "../../components/PostList";
 
-const DefaultPostsScreen = ({ route, navigation }) => {
-  const { username, userEmail } = useUser();
+const DefaultPostsScreen = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
 
+  const { nickname, email } = useSelector((state) => state.auth);
+
+  const getAllPosts = async () => {
+    const q = await query(collection(db, "posts"));
+    await onSnapshot(q, (data) => {
+      const posts = data.docs.map((post) => ({
+        ...post.data(),
+        id: post.id,
+      }));
+
+      return setPosts(posts);
+    });
+  };
+
   useEffect(() => {
-    if (route.params) {
-      setPosts((prevPosts) => [...prevPosts, route.params]);
-    }
-  }, [route.params]);
+    getAllPosts();
+  }, []);
 
   return (
     <View style={styles.container}>
       <View style={styles.userContainer}>
         <View style={styles.avatarBox}></View>
         <View style={styles.userInfo}>
-          <Text style={styles.userName}>{username}</Text>
-          <Text style={styles.userEmail}>{userEmail}</Text>
+          <Text style={styles.userName}>{nickname}</Text>
+          <Text style={styles.userEmail}>{email}</Text>
         </View>
       </View>
       <PostList items={posts} navigation={navigation} />
