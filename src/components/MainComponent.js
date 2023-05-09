@@ -1,5 +1,6 @@
 import "react-native-gesture-handler";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { StatusBar } from "expo-status-bar";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
@@ -8,12 +9,18 @@ import { NavigationContainer } from "@react-navigation/native";
 
 import { authRoute } from "../authRoute";
 
-import { useUser } from "../../userContext";
+import { authStateChangeUser } from "../../redux/auth/authOperations";
 
 import NestedComponent from "./NestedComponent";
 
 const MainComponent = () => {
-  const { isLoggedIn, logIn } = useUser();
+  const dispatch = useDispatch();
+
+  const { stateChange } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    dispatch(authStateChangeUser());
+  }, []);
 
   const [fontsLoaded] = useFonts({
     "Roboto-Regular": require("../../assets/fonts/Roboto-Regular.ttf"),
@@ -35,7 +42,7 @@ const MainComponent = () => {
     <NavigationContainer>
       <StatusBar style="auto" />
       <View style={styles.container} onLayout={onLayoutRootView}>
-        {!isLoggedIn ? authRoute() : <NestedComponent />}
+        {!stateChange ? authRoute() : <NestedComponent />}
       </View>
     </NavigationContainer>
   );
