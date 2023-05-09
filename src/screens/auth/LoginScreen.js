@@ -15,7 +15,7 @@ import {
 
 import { Ionicons } from "@expo/vector-icons";
 
-import { useUser } from "../../../userContext";
+// import { useUser } from "../../../userContext";
 
 import { authSignInUser } from "../../../redux/auth/authOperations";
 
@@ -30,7 +30,7 @@ const LoginScreen = ({ navigation }) => {
 
   const { email, password } = state;
 
-  const { logIn } = useUser();
+  // const { logIn } = useUser();
 
   const dispatch = useDispatch();
 
@@ -48,7 +48,7 @@ const LoginScreen = ({ navigation }) => {
       return;
     }
 
-    logIn("User", email);
+    // logIn("User", email);
     dispatch(authSignInUser(state));
     setState(initialState);
   };
