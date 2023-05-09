@@ -9,10 +9,19 @@ import {
   StyleSheet,
   Dimensions,
 } from "react-native";
+import { useSelector } from "react-redux";
 import { Camera } from "expo-camera";
 import * as Location from "expo-location";
-
+import {
+  ref,
+  uploadBytes,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import { collection, addDoc } from "firebase/firestore";
 import { AntDesign, Feather, FontAwesome } from "@expo/vector-icons";
+
+import { storage, db } from "../../../firebase/config";
 
 const initialState = { title: "", location: "" };
 
@@ -26,6 +35,7 @@ const CreatePostsScreen = ({ navigation }) => {
   const [photo, setPhoto] = useState("");
   const [photoLocation, setPhotoLocation] = useState("");
 
+  const { userId, nickname } = useSelector((state) => state.auth);
   const { title, location } = state;
   const cameraRef = useRef();
 
@@ -69,6 +79,40 @@ const CreatePostsScreen = ({ navigation }) => {
     }
   };
 
+  const uploadPhotoToServer = async () => {
+    try {
+      const response = await fetch(photo);
+      const file = await response.blob();
+
+      const uniquePhotoId = Date.now().toString();
+
+      // Create a storage reference from our storage service
+      const storageRef = ref(storage, `postImg/${uniquePhotoId}`);
+
+      await uploadBytes(storageRef, file);
+
+      const processedPhoto = await getDownloadURL(
+        ref(storage, `postImg/${uniquePhotoId}`)
+      );
+      return processedPhoto;
+    } catch (error) {
+      alert(error.message);
+    }
+  };
+
+  const uploadPostToServer = async () => {
+    const photoRef = await uploadPhotoToServer();
+
+    const createPost = await addDoc(collection(db, "posts"), {
+      userId,
+      nickname,
+      photoRef,
+      title,
+      location,
+      photoLocation,
+    });
+  };
+
   const cancelPreview = async () => {
     await cameraRef.current.resumePreview();
     setIsPreview(false);
@@ -88,12 +132,18 @@ const CreatePostsScreen = ({ navigation }) => {
 
     setState(initialState);
     cancelPreview();
+    uploadPostToServer();
     navigation.navigate("DefaultPostsScreen", {
       photo,
       title,
       location,
       photoLocation,
     });
+  };
+
+  const deletePost = () => {
+    setState(initialState);
+    cancelPreview();
   };
 
   const renderCancelPreviewButton = () => (
@@ -125,6 +175,7 @@ const CreatePostsScreen = ({ navigation }) => {
   if (hasPermission === false) {
     return <Text style={styles.text}>No access to camera</Text>;
   }
+
   return (
     <TouchableWithoutFeedback onPress={keyboardHide}>
       <View style={styles.container}>
@@ -134,9 +185,7 @@ const CreatePostsScreen = ({ navigation }) => {
             style={styles.camera}
             flashMode={Camera.Constants.FlashMode.off}
             onCameraReady={onCameraReady}
-            onMountError={(error) => {
-              // console.log("camera error", error);
-            }}
+            onMountError={(error) => {}}
           >
             {isPreview && renderCancelPreviewButton()}
             {!isPreview && renderCaptureControl()}
@@ -204,7 +253,11 @@ const CreatePostsScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         </View>
-        <TouchableOpacity style={styles.deleteBtn} activeOpacity={0.8}>
+        <TouchableOpacity
+          style={styles.deleteBtn}
+          activeOpacity={0.8}
+          onPress={deletePost}
+        >
           <AntDesign name="delete" size={24} color="#BDBDBD" />
         </TouchableOpacity>
       </View>
