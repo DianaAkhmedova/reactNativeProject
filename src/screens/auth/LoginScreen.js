@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import {
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
@@ -16,6 +17,8 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { useUser } from "../../../userContext";
 
+import { authSignInUser } from "../../../redux/auth/authOperations";
+
 const image = "../../../assets/images/bg.jpg";
 const initialState = { email: "", password: "" };
 
@@ -29,20 +32,24 @@ const LoginScreen = ({ navigation }) => {
 
   const { logIn } = useUser();
 
+  const dispatch = useDispatch();
+
   const keyboardHide = () => {
     setIsShowKeyboard(false);
     Keyboard.dismiss();
   };
 
-  const keyboardHideOnBtn = () => {
-    Keyboard.dismiss();
-    setIsShowKeyboard(false);
+  const handleSubmit = () => {
+    // Keyboard.dismiss();
+    // setIsShowKeyboard(false);
+    keyboardHide();
     if (email === "" || password === "") {
       alert("Всі поля повинні бути заповнені!");
       return;
     }
-    console.log(state);
+
     logIn("User", email);
+    dispatch(authSignInUser(state));
     setState(initialState);
   };
 
@@ -119,7 +126,7 @@ const LoginScreen = ({ navigation }) => {
                 <TouchableOpacity
                   style={styles.btn}
                   activeOpacity={0.8}
-                  onPress={keyboardHideOnBtn}
+                  onPress={handleSubmit}
                 >
                   <Text style={styles.btnTitle}>Увійти</Text>
                 </TouchableOpacity>
