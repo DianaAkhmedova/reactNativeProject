@@ -1,5 +1,6 @@
 import React from "react";
 import { TouchableOpacity } from "react-native";
+import { useDispatch } from "react-redux";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AntDesign, Feather } from "@expo/vector-icons";
 
@@ -9,11 +10,14 @@ import PostsScreen from "./PostsScreen";
 import CreatePostsScreen from "./CreatePostsScreen";
 import ProfileScreen from "./ProfileScreen";
 
+import { authSignOutUser } from "../../../redux/auth/authOperations";
+
 const MainTab = createBottomTabNavigator();
 
 const HomeScreen = ({ navigation }) => {
-  const { logOut } = useUser();
   const { goBack } = navigation;
+
+  const dispatch = useDispatch();
 
   return (
     <MainTab.Navigator
@@ -36,7 +40,7 @@ const HomeScreen = ({ navigation }) => {
             <TouchableOpacity
               style={{ marginRight: 16 }}
               onPress={() => {
-                logOut();
+                dispatch(authSignOutUser());
               }}
             >
               <Feather name="log-out" size={24} color="#BDBDBD" />
