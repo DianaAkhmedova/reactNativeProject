@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   ImageBackground,
   StyleSheet,
@@ -6,16 +7,48 @@ import {
   View,
   TouchableOpacity,
 } from "react-native";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  onSnapshot,
+} from "firebase/firestore";
 
 import { AntDesign, Feather } from "@expo/vector-icons";
+
+import { db } from "../../../firebase/config";
 
 import ProfilePostList from "../../components/ProfilePostList";
 
 const image = "../../../assets/images/bg.jpg";
-import { useUser } from "../../../userContext";
+
+import { authSignOutUser } from "../../../redux/auth/authOperations";
 
 const ProfileScreen = ({ navigation }) => {
-  const { username, logOut } = useUser();
+  const [userPosts, setUserPosts] = useState([]);
+  const { nickname, userId } = useSelector((state) => state.auth);
+
+  const getUserPosts = async () => {
+    const q = await query(
+      collection(db, "posts"),
+      where("userId", "==", userId)
+    );
+
+    await onSnapshot(q, (data) => {
+      const posts = data.docs.map((post) => ({
+        ...post.data(),
+        id: post.id,
+      }));
+      return setUserPosts(posts);
+    });
+  };
+
+  useEffect(() => {
+    getUserPosts();
+  }, []);
+
+  const dispatch = useDispatch();
 
   return (
     <ImageBackground source={require(image)} style={styles.imgBg}>
@@ -23,7 +56,8 @@ const ProfileScreen = ({ navigation }) => {
         <TouchableOpacity
           style={{ position: "absolute", top: 22, right: 16 }}
           onPress={() => {
-            logOut();
+            // logOut();
+            dispatch(authSignOutUser());
           }}
         >
           <Feather name="log-out" size={24} color="#BDBDBD" />
@@ -43,8 +77,8 @@ const ProfileScreen = ({ navigation }) => {
             />
           </View>
         </View>
-        <Text style={styles.title}>{username}</Text>
-        <ProfilePostList navigation={navigation} />
+        <Text style={styles.title}>{nickname}</Text>
+        <ProfilePostList items={userPosts} navigation={navigation} />
       </View>
     </ImageBackground>
   );
@@ -54,6 +88,7 @@ const styles = StyleSheet.create({
   imgBg: {
     flex: 1,
     justifyContent: "flex-end",
+
     resizeMode: "cover",
   },
   container: {
@@ -64,7 +99,7 @@ const styles = StyleSheet.create({
     paddingBottom: 43,
     paddingLeft: 16,
     paddingRight: 16,
-
+    marginTop: 300,
     backgroundColor: "#fff",
     borderTopLeftRadius: 25,
     borderTopEndRadius: 25,
