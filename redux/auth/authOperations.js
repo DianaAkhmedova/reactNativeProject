@@ -20,11 +20,10 @@ export const authSignUpUser =
       await updateProfile(auth.currentUser, {
         displayName: login,
         photoURL: avatar,
-        //   photoURL: "https://example.com/jane-q-user/profile.jpg",
       });
 
       const user = await auth.currentUser;
-      // console.log(user);
+
       dispatch(
         authSlise.actions.updateUserProfile({
           userId: user.uid,
