@@ -87,11 +87,11 @@ const RegistrationScreen = ({ navigation }) => {
     if (userPhoto) {
       const avatar = await uploadAvatarToServer();
       console.log("avatar: ", avatar);
-      await setState((prevState) => ({
+      setState((prevState) => ({
         ...prevState,
         avatar,
       }));
-      console.log(state);
+
       dispatch(authSignUpUser(state));
       setState(initialState);
       return;
@@ -100,7 +100,7 @@ const RegistrationScreen = ({ navigation }) => {
       setState(initialState);
     }
   };
-
+  // console.log(state);
   return (
     <ImageBackground source={require(image)} style={styles.imgBg}>
       <TouchableWithoutFeedback onPress={keyboardHide}>
