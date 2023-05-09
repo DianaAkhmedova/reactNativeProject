@@ -5,21 +5,25 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  Image,
 } from "react-native";
 
 import { AntDesign, FontAwesome, Feather } from "@expo/vector-icons";
 
-const DATA = [
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    title: "Ліс",
-  },
-];
-
-const Item = ({ title, navigation }) => (
+const Item = ({
+  postId,
+  title,
+  location,
+  photo,
+  navigation,
+  latitude,
+  longitude,
+}) => (
   <View style={styles.item}>
     {/* //     <Text style={styles.title}>{title}</Text> */}
-    <View style={styles.photoWrapper}></View>
+    <View style={styles.photoWrapper}>
+      <Image style={{ flex: 1, borderRadius: 8 }} source={{ uri: photo }} />
+    </View>
     <Text style={styles.text}>{title}</Text>
     <View
       style={{
@@ -28,26 +32,34 @@ const Item = ({ title, navigation }) => (
         marginTop: 8,
       }}
     >
-      <TouchableOpacity>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("Коментарі", { photo, postId });
+          }}
+        >
           <FontAwesome
             name="comment"
             size={24}
             color="#FF6C00"
             style={{ marginRight: 6 }}
           />
-          <Text style={styles.comments}>0</Text>
+        </TouchableOpacity>
+        <Text style={styles.comments}>0</Text>
+        <TouchableOpacity>
           <AntDesign
             name="like2"
             size={24}
             color="#FF6C00"
             style={{ marginRight: 6 }}
           />
-          <Text style={styles.likes}>0</Text>
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+        <Text style={styles.likes}>0</Text>
+      </View>
       <View style={{ flexDirection: "row", alignItems: "center" }}>
-        <TouchableOpacity onPress={() => navigation.navigate("Карта")}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Карта", { latitude, longitude })}
+        >
           <Feather
             name="map-pin"
             size={24}
@@ -55,18 +67,26 @@ const Item = ({ title, navigation }) => (
             style={{ marginRight: 4 }}
           />
         </TouchableOpacity>
-        <Text style={styles.location}>Ivano-Frankivs'k Region, Ukraine</Text>
+        <Text style={styles.location}>{location}</Text>
       </View>
     </View>
   </View>
 );
 
-const ProfilePostList = ({ navigation }) => {
+const ProfilePostList = ({ navigation, items }) => {
   return (
     <FlatList
-      data={DATA}
+      data={items}
       renderItem={({ item }) => (
-        <Item title={item.title} navigation={navigation} />
+        <Item
+          postId={item.id}
+          latitude={item.photoLocation.coords.latitude}
+          longitude={item.photoLocation.coords.longitude}
+          title={item.title}
+          location={item.location}
+          photo={item.photoRef}
+          navigation={navigation}
+        />
       )}
       keyExtractor={(item) => item.id}
     />
@@ -86,8 +106,6 @@ const styles = StyleSheet.create({
     height: 240,
     borderRadius: 16,
     backgroundColor: "#F6F6F6",
-    alignItems: "center",
-    justifyContent: "center",
   },
   text: {
     marginTop: 8,
