@@ -1,6 +1,5 @@
-import { app, db, auth } from "../../firebase/config";
+import { auth } from "../../firebase/config";
 import {
-  getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
