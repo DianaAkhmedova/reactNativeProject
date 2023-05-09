@@ -10,14 +10,15 @@ import {
 
 import { FontAwesome, Feather } from "@expo/vector-icons";
 
-const DATA = [
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    title: "Ліс",
-  },
-];
-
-const Item = ({ title, location, photo, navigation, latitude, longitude }) => (
+const Item = ({
+  postId,
+  title,
+  location,
+  photo,
+  navigation,
+  latitude,
+  longitude,
+}) => (
   <View style={styles.item}>
     <View style={styles.photoWrapper}>
       <Image style={{ flex: 1, borderRadius: 8 }} source={{ uri: photo }} />
@@ -32,7 +33,7 @@ const Item = ({ title, location, photo, navigation, latitude, longitude }) => (
     >
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate("Коментарі", {photo});
+          navigation.navigate("Коментарі", { photo, postId });
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -71,11 +72,12 @@ const PostList = ({ items, navigation }) => {
       data={items}
       renderItem={({ item }) => (
         <Item
+          postId={item.id}
           latitude={item.photoLocation.coords.latitude}
           longitude={item.photoLocation.coords.longitude}
           title={item.title}
           location={item.location}
-          photo={item.photo}
+          photo={item.photoRef}
           navigation={navigation}
         />
       )}
