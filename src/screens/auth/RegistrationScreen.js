@@ -86,13 +86,13 @@ const RegistrationScreen = ({ navigation }) => {
 
     if (userPhoto) {
       const avatar = await uploadAvatarToServer();
-      console.log("avatar: ", avatar);
+      // console.log("avatar: ", avatar);
       setState((prevState) => ({
         ...prevState,
         avatar,
       }));
 
-      dispatch(authSignUpUser(state));
+      dispatch(authSignUpUser({ login, email, password, avatar }));
       setState(initialState);
       return;
     } else {
