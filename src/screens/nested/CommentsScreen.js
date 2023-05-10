@@ -29,12 +29,13 @@ const CommentsScreen = ({ route, navigation }) => {
   const [isShowKeyboard, setIsShowKeyboard] = useState(false);
 
   const { photo, postId } = route.params;
-  const { nickname } = useSelector((state) => state.auth);
+  const { userId } = useSelector((state) => state.auth);
 
   const createComment = async () => {
     const commentRef = doc(db, "posts", postId);
+    // console.log(userId);
     await addDoc(collection(commentRef, "comments"), {
-      nickname,
+      userId,
       comment,
       date: moment().format(" DD MMMM, YYYY | HH:mm"),
     });
@@ -47,11 +48,12 @@ const CommentsScreen = ({ route, navigation }) => {
         ...comment.data(),
         id: comment.id,
       }));
+
       return setAllComments(comments);
     });
   };
 
-  console.log(allComments);
+  // console.log(allComments);
   useEffect(() => {
     getAllComments();
   }, []);
