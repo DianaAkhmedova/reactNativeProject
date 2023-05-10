@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import { useSelector } from "react-redux";
 import { collection, query, onSnapshot } from "firebase/firestore";
 
@@ -10,7 +10,8 @@ import PostList from "../../components/PostList";
 const DefaultPostsScreen = ({ navigation }) => {
   const [posts, setPosts] = useState([]);
 
-  const { nickname, email } = useSelector((state) => state.auth);
+  const { nickname, email, avatar } = useSelector((state) => state.auth);
+  // console.log(avatar);
 
   const getAllPosts = async () => {
     const q = await query(collection(db, "posts"));
@@ -31,12 +32,20 @@ const DefaultPostsScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.userContainer}>
-        <View style={styles.avatarBox}></View>
+        <View style={styles.avatarBox}>
+          {avatar && (
+            <Image
+              source={{ uri: avatar }}
+              style={{ width: 60, height: 60, borderRadius: 16 }}
+            />
+          )}
+        </View>
         <View style={styles.userInfo}>
           <Text style={styles.userName}>{nickname}</Text>
           <Text style={styles.userEmail}>{email}</Text>
         </View>
       </View>
+
       <PostList items={posts} navigation={navigation} />
     </View>
   );
