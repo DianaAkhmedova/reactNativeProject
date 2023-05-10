@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import {
   View,
   FlatList,
@@ -8,7 +9,11 @@ import {
   Image,
 } from "react-native";
 
+import { collection, doc, query, onSnapshot } from "firebase/firestore";
+
 import { FontAwesome, Feather } from "@expo/vector-icons";
+
+import { db } from "../../firebase/config";
 
 const Item = ({
   postId,
@@ -18,53 +23,69 @@ const Item = ({
   navigation,
   latitude,
   longitude,
-}) => (
-  <View style={styles.item}>
-    <View style={styles.photoWrapper}>
-      <Image style={{ flex: 1, borderRadius: 8 }} source={{ uri: photo }} />
-    </View>
-    <Text style={styles.text}>{title}</Text>
-    <View
-      style={{
-        flexDirection: "row",
-        justifyContent: "space-between",
-        marginTop: 8,
-      }}
-    >
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate("Коментарі", { photo, postId });
+}) => {
+  const [commentsAmount, setCommentsAmount] = useState(null);
+
+  const { userId } = useSelector((store) => store.auth);
+
+  useEffect(() => {
+    const docRef = doc(db, "posts", postId);
+    const q = query(collection(docRef, "comments"));
+    const unsubscribe = onSnapshot(q, (data) => {
+      setCommentsAmount(data.docs.length);
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, [postId]);
+  return (
+    <View style={styles.item}>
+      <View style={styles.photoWrapper}>
+        <Image style={{ flex: 1, borderRadius: 8 }} source={{ uri: photo }} />
+      </View>
+      <Text style={styles.text}>{title}</Text>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          marginTop: 8,
         }}
       >
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <FontAwesome
-            name="comment-o"
-            size={24}
-            color="#BDBDBD"
-            style={{ marginRight: 6 }}
-          />
-          <Text style={styles.comments}>0</Text>
-        </View>
-      </TouchableOpacity>
-
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("Карта", { latitude, longitude });
+            navigation.navigate("Коментарі", { photo, postId });
           }}
         >
-          <Feather
-            name="map-pin"
-            size={24}
-            color="#BDBDBD"
-            style={{ marginRight: 4 }}
-          />
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <FontAwesome
+              name="comment-o"
+              size={24}
+              color="#BDBDBD"
+              style={{ marginRight: 6 }}
+            />
+            <Text style={styles.comments}>{commentsAmount}</Text>
+          </View>
         </TouchableOpacity>
-        <Text style={styles.location}>{location}</Text>
+
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("Карта", { latitude, longitude });
+            }}
+          >
+            <Feather
+              name="map-pin"
+              size={24}
+              color="#BDBDBD"
+              style={{ marginRight: 4 }}
+            />
+          </TouchableOpacity>
+          <Text style={styles.location}>{location}</Text>
+        </View>
       </View>
     </View>
-  </View>
-);
+  );
+};
 
 const PostList = ({ items, navigation }) => {
   return (
