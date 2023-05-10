@@ -6,6 +6,7 @@ import {
   Text,
   View,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import {
   collection,
@@ -27,7 +28,7 @@ import { authSignOutUser } from "../../../redux/auth/authOperations";
 
 const ProfileScreen = ({ navigation }) => {
   const [userPosts, setUserPosts] = useState([]);
-  const { nickname, userId } = useSelector((state) => state.auth);
+  const { nickname, userId, avatar } = useSelector((state) => state.auth);
 
   const getUserPosts = async () => {
     const q = await query(
@@ -64,6 +65,12 @@ const ProfileScreen = ({ navigation }) => {
         </TouchableOpacity>
         <View style={styles.avatarBox}>
           <View style={styles.avatar}>
+            {avatar && (
+              <Image
+                source={{ uri: avatar }}
+                style={{ width: 120, height: 120, borderRadius: 16 }}
+              />
+            )}
             <AntDesign
               // name={isAvatar ? "pluscircleo" : "closecircleo"}
               name="closecircleo"
