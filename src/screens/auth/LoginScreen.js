@@ -48,7 +48,6 @@ const LoginScreen = ({ navigation }) => {
       return;
     }
 
-    // logIn("User", email);
     dispatch(authSignInUser(state));
     setState(initialState);
   };
