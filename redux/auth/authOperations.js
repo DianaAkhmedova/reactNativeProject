@@ -12,7 +12,7 @@ import { authSlise } from "./authReduser";
 export const authSignUpUser =
   ({ login, email, password, avatar }) =>
   async (dispatch, getState) => {
-    console.log("avatar in authSignUpUser: ", avatar);
+    // console.log("avatar in authSignUpUser: ", avatar);
     try {
       await createUserWithEmailAndPassword(auth, email, password);
 
@@ -40,7 +40,17 @@ export const authSignInUser =
   ({ email, password }) =>
   async (dispatch, getState) => {
     try {
-      const user = signInWithEmailAndPassword(auth, email, password);
+      const user = await signInWithEmailAndPassword(auth, email, password);
+      const { uid, displayName, email: userEmail, photoURL } = user.user;
+
+      dispatch(
+        authSlise.actions.updateUserProfile({
+          userId: uid,
+          nickname: displayName,
+          email: userEmail,
+          avatar: photoURL,
+        })
+      );
     } catch (error) {
       alert(error.message);
     }
