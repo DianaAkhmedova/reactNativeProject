@@ -8,18 +8,30 @@ import {
   Image,
   SafeAreaView,
 } from "react-native";
+import { useSelector } from "react-redux";
 
 import { FontAwesome, Feather } from "@expo/vector-icons";
 
-const Item = ({ comment, nickname, date }) => (
-  <View style={styles.item}>
-    <View style={styles.avatarBox}></View>
-    <View style={{ ...styles.commentWrapper }}>
-      <Text>{comment}</Text>
-      <Text style={styles.date}>{date}</Text>
+const Item = ({ comment, nickname, date }) => {
+  const { avatar } = useSelector((state) => state.auth);
+
+  return (
+    <View style={styles.item}>
+      <View style={styles.avatarBox}>
+        {avatar && (
+          <Image
+            source={{ uri: avatar }}
+            style={{ width: 28, height: 28, borderRadius: 50 }}
+          />
+        )}
+      </View>
+      <View style={{ ...styles.commentWrapper }}>
+        <Text>{comment}</Text>
+        <Text style={styles.date}>{date}</Text>
+      </View>
     </View>
-  </View>
-);
+  );
+};
 
 const CommentsList = ({ items, navigation }) => {
   return (
